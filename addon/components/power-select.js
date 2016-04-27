@@ -53,18 +53,18 @@ export default Ember.Component.extend({
 
   // Lifecycle hooks
   init() {
-    console.log('init entered');
+    console.log('init EPS entered');
     this._super(...arguments);
     Ember.assert('{{power-select}} requires an `onchange` function', this.get('onchange') && typeof this.get('onchange') === 'function');
-    console.log('init exited');
+    console.log('init EPS exited');
   },
 
   willDestroy() {
-    console.log('will destroy entered');
+    console.log('willDestroy EPS entered');
     this._super(...arguments);
     this.activeSearch = null;
     run.cancel(this.expirableSearchDebounceId);
-    console.log('will destroy exited');
+    console.log('willDestroy EPS exited');
   },
 
   // CPs
@@ -311,11 +311,20 @@ export default Ember.Component.extend({
   // Methods
   scrollIfHighlightedIsOutOfViewport() {
     console.log('scrollIfHighlightedIsOutOfViewport scheduleOnce entered');
-    if (!self.document) { return; }
+    if (!self.document) {
+      console.log('scrollIfHighlightedIsOutOfViewport scheduleOnce exited');
+      return;
+    }
     const optionsList = document.querySelector('.ember-power-select-options');
-    if (!optionsList) { return; }
+    if (!optionsList) {
+      console.log('scrollIfHighlightedIsOutOfViewport scheduleOnce exited');
+      return;
+    }
     const highlightedOption = optionsList.querySelector('.ember-power-select-option[aria-current="true"]');
-    if (!highlightedOption) { return; }
+    if (!highlightedOption) {
+      console.log('scrollIfHighlightedIsOutOfViewport scheduleOnce exited');
+      return;
+    }
     const optionTopScroll = highlightedOption.offsetTop - optionsList.offsetTop;
     const optionBottomScroll = optionTopScroll + highlightedOption.offsetHeight;
     if (optionBottomScroll > optionsList.offsetHeight + optionsList.scrollTop) {
