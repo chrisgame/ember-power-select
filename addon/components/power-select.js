@@ -3,7 +3,7 @@ import layout from '../templates/components/power-select';
 import { defaultMatcher, indexOfOption, optionAtIndex, filterOptions, countOptions } from '../utils/group-utils';
 import fallbackIfUndefined from '../utils/computed-fallback-if-undefined';
 
-const { computed, run, get, isBlank } = Ember;
+const { observer, computed, run, get, isBlank } = Ember;
 const EventSender = Ember.Object.extend(Ember.Evented);
 const assign = Ember.assign || Ember.merge;
 function concatWithProperty(strings, property) {
@@ -53,17 +53,29 @@ export default Ember.Component.extend({
 
   // Lifecycle hooks
   init() {
+    console.log('init entered');
     this._super(...arguments);
     Ember.assert('{{power-select}} requires an `onchange` function', this.get('onchange') && typeof this.get('onchange') === 'function');
+    console.log('init exited');
   },
 
   willDestroy() {
+    console.log('will destroy entered');
     this._super(...arguments);
     this.activeSearch = null;
     run.cancel(this.expirableSearchDebounceId);
+    console.log('will destroy exited');
   },
 
   // CPs
+  logExpirableSearchText: observer('expirableSearchText', function(sender, key, value, rev) {
+    console.log("expirableSearchText set");
+    console.log("sender " + sender);
+    console.log("key " + key);
+    console.log("value " + value);
+    console.log("rev " + rev);
+  }),
+
   triggerId: computed(function() {
     return `ember-power-select-trigger-${this.elementId}`;
   }),
@@ -298,6 +310,7 @@ export default Ember.Component.extend({
 
   // Methods
   scrollIfHighlightedIsOutOfViewport() {
+    console.log('scrollIfHighlightedIsOutOfViewport scheduleOnce entered');
     if (!self.document) { return; }
     const optionsList = document.querySelector('.ember-power-select-options');
     if (!optionsList) { return; }
@@ -310,6 +323,7 @@ export default Ember.Component.extend({
     } else if (optionTopScroll < optionsList.scrollTop) {
       optionsList.scrollTop = optionTopScroll;
     }
+    console.log('scrollIfHighlightedIsOutOfViewport scheduleOnce exited');
   },
 
   indexOfOption(option) {
